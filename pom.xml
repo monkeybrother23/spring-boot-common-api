@@ -11,8 +11,8 @@
     <properties>
         <revision>0.0.1</revision>
         <spring.boot.version>2.4.13</spring.boot.version>
-<!--        <spring.cloud.version>2020.0.4</spring.cloud.version>-->
-        <spring.cloud.version>2020.0.3</spring.cloud.version>
+        <!--        <spring.cloud.version>2020.0.4</spring.cloud.version>-->
+        <spring.cloud.version>2020.0.4</spring.cloud.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
@@ -21,15 +21,22 @@
     </properties>
     <!-- 声明子模块 -->
     <modules>
-        <module>common-web</module>
+        <module>common-redis</module>
+        <module>common-security</module>
         <module>common-swagger</module>
+        <module>common-web</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.albert</groupId>
-                <artifactId>common-api</artifactId>
+                <artifactId>common-redis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.albert</groupId>
+                <artifactId>common-security</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -37,26 +44,11 @@
                 <artifactId>common-swagger</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <!--            <dependency>-->
-            <!--                <groupId>com.albert</groupId>-->
-            <!--                <artifactId>demo-common-web</artifactId>-->
-            <!--                <version>${revision}</version>-->
-            <!--            </dependency>-->
-            <!--            <dependency>-->
-            <!--                <groupId>com.albert</groupId>-->
-            <!--                <artifactId>demo-common-security</artifactId>-->
-            <!--                <version>${revision}</version>-->
-            <!--            </dependency>-->
-            <!--            <dependency>-->
-            <!--                <groupId>com.albert</groupId>-->
-            <!--                <artifactId>demo-common-redis</artifactId>-->
-            <!--                <version>${revision}</version>-->
-            <!--            </dependency>-->
-            <!--            <dependency>-->
-            <!--                <groupId>com.albert</groupId>-->
-            <!--                <artifactId>demo-auth-api</artifactId>-->
-            <!--                <version>${revision}</version>-->
-            <!--            </dependency>-->
+            <dependency>
+                <groupId>com.albert</groupId>
+                <artifactId>common-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!--SpringBoot的jar包依赖-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
