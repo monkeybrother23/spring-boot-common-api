@@ -2,8 +2,6 @@ package com.albert.common.security.filter;
 
 import com.albert.common.security.config.ConfigConstant;
 import com.albert.common.security.model.UserTokenModel;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,11 +24,11 @@ import java.util.Objects;
  * 登录成功后 走此类进行鉴权操作
  */
 public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
-    private static final Logger logger = LoggerFactory.getLogger(OncePreAuthenticationFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(OncePreAuthenticationFilter.class);
 
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public OncePreAuthenticationFilter(AuthenticationManager authenticationManager, RedisTemplate<String, String> redisTemplate) {
+    public OncePreAuthenticationFilter(AuthenticationManager authenticationManager, RedisTemplate<String, Object> redisTemplate) {
         super(authenticationManager);
         this.redisTemplate = redisTemplate;
     }
@@ -42,7 +40,7 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String tokenHeader = request.getHeader(ConfigConstant.TOKEN_HEADER);
         if (Objects.isNull(tokenHeader)) {
-            logger.debug("token为空");
+            log.debug("token为空");
             chain.doFilter(request, response);
         } else {
             if (Boolean.TRUE.equals(redisTemplate.hasKey(tokenHeader))) {
@@ -50,7 +48,7 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
                 super.doFilterInternal(request, response, chain);
             } else {
-                logger.debug("缓存未查询到token");
+                log.debug("缓存未查询到token");
                 chain.doFilter(request, response);
             }
         }
@@ -67,14 +65,11 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
         String username = "";
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         // 从Token中解密获取用户角色
-        String json = redisTemplate.opsForValue().get(tokenHeader);
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            UserTokenModel userTokenModel = objectMapper.readValue(json, UserTokenModel.class);
+        Object o = redisTemplate.opsForValue().get(tokenHeader);
+        UserTokenModel userTokenModel = (UserTokenModel) o;
+        if (Objects.nonNull(userTokenModel)) {
             username = userTokenModel.getUsername();
             userTokenModel.getGrantedAuthorityList().forEach(temp -> authorities.add(new SimpleGrantedAuthority(temp)));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         }
         return new UsernamePasswordAuthenticationToken(username, null, authorities);
     }

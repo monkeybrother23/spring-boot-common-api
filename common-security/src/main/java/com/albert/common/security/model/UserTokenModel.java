@@ -1,12 +1,10 @@
 package com.albert.common.security.model;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class UserTokenModel implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class UserTokenModel {
     // 用户名
     private String username;
 

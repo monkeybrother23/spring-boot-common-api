@@ -82,11 +82,12 @@ public class ApiResult<T extends Serializable> implements Serializable {
     /**
      * 成功返回
      *
-     * @param list       List<T>
-     * @param apiMessage ApiMessage
+     * @param list       list
+     * @param apiMessage apiMessage
+     * @param <T>        泛型
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<ArrayList<T>> success(List<T> list, ApiMessage apiMessage) {
+    public static <T extends Serializable> ApiResult<ArrayList<T>> ok2(List<T> list, ApiMessage apiMessage) {
         ApiResult<ArrayList<T>> apiResult = new ApiResult<>();
         apiResult.setStatus(true);
         apiResult.setCode(apiMessage.getCode());
@@ -104,7 +105,7 @@ public class ApiResult<T extends Serializable> implements Serializable {
     /**
      * 失败返回
      *
-     * @param apiMessage ApiMessage
+     * @param apiMessage apiMessage
      * @return ApiResult
      */
     public static <T extends Serializable> ApiResult<T> fail(ApiMessage apiMessage) {
@@ -118,16 +119,16 @@ public class ApiResult<T extends Serializable> implements Serializable {
     /**
      * 失败返回
      *
-     * @param data       T
-     * @param apiMessage ApiMessage
+     * @param code code
+     * @param msg  msg
+     * @param <T>  泛型
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<T> fail(T data, ApiMessage apiMessage) {
+    public static <T extends Serializable> ApiResult<T> fail(String code, String msg) {
         ApiResult<T> result = new ApiResult<>();
         result.status = false;
-        result.setCode(apiMessage.getCode());
-        result.setMsg(apiMessage.getMsg());
-        result.setData(data);
+        result.setCode(code);
+        result.setMsg(msg);
         return result;
     }
 }

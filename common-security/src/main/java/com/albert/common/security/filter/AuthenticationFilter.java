@@ -25,9 +25,9 @@ import java.util.HashMap;
  */
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     AuthenticationManager authenticationManager;
-    RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, RedisTemplate<String, String> redisTemplate) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, RedisTemplate<String, Object> redisTemplate) {
         this.authenticationManager = authenticationManager;
         this.redisTemplate = redisTemplate;
     }
@@ -47,7 +47,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         UserTokenModel model = new UserTokenModel();
         model.setUsername(name);
         model.setGrantedAuthorityList(SecurityUtils.getAuthorities(authResult));
-        redisTemplate.opsForValue().set(name, objectMapper.writeValueAsString(model));
+        redisTemplate.opsForValue().set(name, model);
 //        redisTemplate.opsForValue().set(token, model, 30, TimeUnit.MINUTES);
         response.setContentType("application/json;charset=utf-8");
         PrintWriter writer = response.getWriter();

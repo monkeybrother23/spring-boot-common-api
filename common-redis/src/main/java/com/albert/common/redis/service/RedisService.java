@@ -3,71 +3,47 @@ package com.albert.common.redis.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.TimeUnit;
+import org.springframework.util.StringUtils;
 
 @Service
 public class RedisService {
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
+    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
-
-
+    
     /**
-     * 设置有效时间
-     *
-     * @param key     Redis键
-     * @param timeout 超时时间
-     * @return true=设置成功；false=设置失败
+     * 根据key读取数据
      */
-    public boolean expire(final String key, final long timeout) {
-        return expire(key, timeout, TimeUnit.SECONDS);
+    public Object get(final String key) {
+        if (StringUtils.hasText(key)) {
+            return null;
+        }
+        try {
+            return redisTemplate.opsForValue().get(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     * 设置有效时间
-     *
-     * @param key     Redis键
-     * @param timeout 超时时间
-     * @param unit    时间单位
-     * @return true=设置成功；false=设置失败
+     * 写入数据
      */
-    public boolean expire(final String key, final long timeout, final TimeUnit unit) {
-        return redisTemplate.expire(key, timeout, unit);
-    }
-
-    /**
-     * 获取有效时间
-     *
-     * @param key Redis键
-     * @return 有效时间
-     */
-    public long getExpire(final String key) {
-        return redisTemplate.getExpire(key);
-    }
-
-    /**
-     * 判断 key是否存在
-     *
-     * @param key 键
-     * @return true 存在 false不存在
-     */
-    public Boolean hasKey(String key) {
-        return redisTemplate.hasKey(key);
-    }
-
-    //从redis中获取值
-    public Object getValue(String key) {
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    /**
-     * 删除单个对象
-     */
-    public boolean deleteObject(final String key) {
-        return redisTemplate.delete(key);
+    public boolean set(final String key, Object value) {
+        if (StringUtils.hasText(key)) {
+            return false;
+        }
+        try {
+            redisTemplate.opsForValue().set(key, value);
+            //   log.info("存入redis成功，key：{}，value：{}", key, value);
+            return true;
+        } catch (Exception e) {
+            //   log.error("存入redis失败，key：{}，value：{}", key, value);
+            e.printStackTrace();
+        }
+        return false;
     }
 }

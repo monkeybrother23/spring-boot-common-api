@@ -18,9 +18,9 @@ import java.util.HashMap;
 
 public class AuthenticationLogout implements LogoutSuccessHandler {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationLogout.class);
-    RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
-    public AuthenticationLogout(RedisTemplate<String, String> redisTemplate) {
+    public AuthenticationLogout(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

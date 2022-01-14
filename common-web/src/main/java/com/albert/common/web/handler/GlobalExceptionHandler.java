@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.StringJoiner;
@@ -41,7 +43,7 @@ public class GlobalExceptionHandler {
         fieldErrors.forEach(temp -> stringJoiner.add(temp.getField() + ":" + temp.getDefaultMessage()));
         String msg = stringJoiner.toString();
         logger.warn("bindExceptionHandler:{}", msg);
-        return ApiResult.fail(msg, ApiStatus.ERROR);
+        return ApiResult.fail(ApiStatus.VALIDATION.getCode(), msg);
     }
 
     /**
@@ -50,7 +52,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ApiResult<String> accessExceptionHandler(AccessDeniedException e) {
-        return ApiResult.fail(e.getMessage(), ApiStatus.FORBIDDEN);
+        return ApiResult.fail(ApiStatus.FORBIDDEN.getCode(), e.getMessage());
     }
 
     /**
@@ -59,7 +61,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResult<String> exceptionHandler(Exception e) {
-        return ApiResult.fail(e.getMessage(), ApiStatus.ERROR);
+        return ApiResult.fail(ApiStatus.ERROR.getCode(), e.getMessage());
     }
 
 }
