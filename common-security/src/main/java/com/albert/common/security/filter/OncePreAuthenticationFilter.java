@@ -4,6 +4,8 @@ import com.albert.common.security.config.ConfigConstant;
 import com.albert.common.security.model.UserTokenModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,7 @@ import java.util.Objects;
  * 登录成功后 走此类进行鉴权操作
  */
 public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
+    private static final Logger logger = LoggerFactory.getLogger(OncePreAuthenticationFilter.class);
 
     private RedisTemplate<String, String> redisTemplate;
 
@@ -39,6 +42,7 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String tokenHeader = request.getHeader(ConfigConstant.TOKEN_HEADER);
         if (Objects.isNull(tokenHeader)) {
+            logger.debug("token为空");
             chain.doFilter(request, response);
         } else {
             if (Boolean.TRUE.equals(redisTemplate.hasKey(tokenHeader))) {
@@ -46,6 +50,7 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
                 super.doFilterInternal(request, response, chain);
             } else {
+                logger.debug("缓存未查询到token");
                 chain.doFilter(request, response);
             }
         }

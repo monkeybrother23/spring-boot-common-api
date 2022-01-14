@@ -2,6 +2,8 @@ package com.albert.common.security.handler;
 
 import com.albert.common.security.config.ConfigConstant;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -15,7 +17,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 public class AuthenticationLogout implements LogoutSuccessHandler {
-
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationLogout.class);
     RedisTemplate<String, String> redisTemplate;
 
     public AuthenticationLogout(RedisTemplate<String, String> redisTemplate) {
@@ -27,6 +29,7 @@ public class AuthenticationLogout implements LogoutSuccessHandler {
         //注销
         String userName = httpServletRequest.getHeader(ConfigConstant.TOKEN_HEADER);
         if (StringUtils.hasLength(userName) && Boolean.TRUE.equals(redisTemplate.hasKey(userName))) {
+            logger.debug("清除缓存token");
             redisTemplate.delete(userName);
         }
         httpServletResponse.setContentType("application/json;charset=utf-8");
