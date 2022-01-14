@@ -1,7 +1,7 @@
 package com.albert.common.security.config;
 
 /**
- * @author CuiHao
+ * @author Albert
  */
 public class ConfigConstant {
 

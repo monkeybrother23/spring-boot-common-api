@@ -5,7 +5,6 @@ import com.albert.common.security.filter.OncePreAuthenticationFilter;
 import com.albert.common.security.handler.AuthenticationLogout;
 import com.albert.common.security.serivce.UserServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
