@@ -3,8 +3,6 @@ package com.albert.common.security.config;
 import com.albert.common.security.filter.AuthenticationFilter;
 import com.albert.common.security.filter.OncePreAuthenticationFilter;
 import com.albert.common.security.handler.AuthenticationLogout;
-import com.albert.common.security.handler.TokenAccessDeniedHandler;
-import com.albert.common.security.handler.TokenAuthenticationEntryPoint;
 import com.albert.common.security.serivce.UserServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,10 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager(), redisTemplate))
                 .addFilter(new OncePreAuthenticationFilter(authenticationManager(), redisTemplate))
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//去除默认session
-                .and()
-                .exceptionHandling().authenticationEntryPoint(new TokenAuthenticationEntryPoint());//未登录
-//                .accessDeniedHandler(new TokenAccessDeniedHandler());//权限不足
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//去除默认session
     }
 
     /**
