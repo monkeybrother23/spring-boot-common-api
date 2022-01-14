@@ -2,6 +2,7 @@ package com.albert.common.web.result;
 
 public enum ApiStatus implements ApiMessage {
     SUCCESS("200", "success"),
+    FORBIDDEN("403", "forbidden"),
 
     ERROR("500", "system error");
 

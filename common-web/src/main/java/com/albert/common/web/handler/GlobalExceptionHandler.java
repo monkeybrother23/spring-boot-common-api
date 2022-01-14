@@ -7,17 +7,15 @@ import com.albert.common.web.result.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.StringJoiner;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -26,7 +24,6 @@ public class GlobalExceptionHandler {
      * ApiException
      */
     @ExceptionHandler(value = ApiException.class)
-    @ResponseBody
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ApiResult<String> apiExceptionHandler(ApiException e) {
         return ApiResult.fail(e);
@@ -37,7 +34,6 @@ public class GlobalExceptionHandler {
      * BindException
      */
     @ExceptionHandler(value = BindException.class)
-    @ResponseBody
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ApiResult<String> bindExceptionHandler(BindException e) {
         StringJoiner stringJoiner = new StringJoiner(", ", "[", "]");
@@ -49,10 +45,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * AccessDeniedException
+     */
+    @ExceptionHandler(value = AccessDeniedException.class)
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    public ApiResult<String> accessExceptionHandler(AccessDeniedException e) {
+        return ApiResult.fail(e.getMessage(), ApiStatus.FORBIDDEN);
+    }
+
+    /**
      * Exception
      */
     @ExceptionHandler(value = Exception.class)
-    @ResponseBody
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiResult<String> exceptionHandler(Exception e) {
         return ApiResult.fail(e.getMessage(), ApiStatus.ERROR);

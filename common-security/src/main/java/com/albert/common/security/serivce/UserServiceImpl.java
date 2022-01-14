@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,10 +30,9 @@ public class UserServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) {
         UserEntity entity = userRepository.findUserEntityByUsername(userName);
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        List<GrantedAuthority> authorities;
         if (Objects.isNull(entity)) {
-            // throw new InternalAuthenticationServiceException("用户不存在");
-            return new User(userName, "", authorities);
+             throw new UsernameNotFoundException(userName);
         } else {
             List<HashMap<String, String>> userRoleAndAuthorityList = userRepository.findUserRoleAndAuthorityByUsername(userName);
             authorities = userRoleAndAuthorityList.stream().map(temp -> new SimpleGrantedAuthority(temp.getOrDefault("my_key", ""))).collect(Collectors.toList());

@@ -76,8 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new OncePreAuthenticationFilter(authenticationManager(), redisTemplate))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//去除默认session
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new TokenAuthenticationEntryPoint())//未登录
-                .accessDeniedHandler(new TokenAccessDeniedHandler());//权限不足
+                .exceptionHandling().authenticationEntryPoint(new TokenAuthenticationEntryPoint());//未登录
+//                .accessDeniedHandler(new TokenAccessDeniedHandler());//权限不足
     }
 
     /**
