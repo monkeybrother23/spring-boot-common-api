@@ -22,7 +22,7 @@ public class Http401AuthenticationEntryPoint implements AuthenticationEntryPoint
         PrintWriter writer = httpServletResponse.getWriter();
         HashMap<String, Object> map = new HashMap<>();
         map.put("status", false);
-        map.put("code", "400");
+        map.put("code", "401");
         map.put("msg", "未登录");
         writer.println(new ObjectMapper().writeValueAsString(map));
         writer.close();
