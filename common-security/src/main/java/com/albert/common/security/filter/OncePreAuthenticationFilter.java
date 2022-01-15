@@ -2,8 +2,6 @@ package com.albert.common.security.filter;
 
 import com.albert.common.security.config.ConfigConstant;
 import com.albert.common.security.model.UserTokenModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,9 +22,8 @@ import java.util.Objects;
  * 登录成功后 走此类进行鉴权操作
  */
 public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
-    private static final Logger log = LoggerFactory.getLogger(OncePreAuthenticationFilter.class);
 
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public OncePreAuthenticationFilter(AuthenticationManager authenticationManager, RedisTemplate<String, Object> redisTemplate) {
         super(authenticationManager);
@@ -40,15 +37,13 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String tokenHeader = request.getHeader(ConfigConstant.TOKEN_HEADER);
         if (Objects.isNull(tokenHeader)) {
-            log.debug("token为空");
             chain.doFilter(request, response);
         } else {
             if (Boolean.TRUE.equals(redisTemplate.hasKey(tokenHeader))) {
                 // 已经登录 则调用下面的方法进行解析 并设置认证信息
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
-                super.doFilterInternal(request, response, chain);
+                chain.doFilter(request, response);
             } else {
-                log.debug("缓存未查询到token");
                 chain.doFilter(request, response);
             }
         }

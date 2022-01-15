@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ApiResult<String> accessExceptionHandler(AccessDeniedException e) {
-        return ApiResult.fail(ApiStatus.FORBIDDEN.getCode(), e.getMessage());
+        return ApiResult.fail(ApiStatus.FORBIDDEN.getCode(), "权限不足，无法访问");
     }
 
     /**

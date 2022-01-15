@@ -3,6 +3,7 @@ package com.albert.common.security.config;
 import com.albert.common.security.filter.AuthenticationFilter;
 import com.albert.common.security.filter.OncePreAuthenticationFilter;
 import com.albert.common.security.handler.AuthenticationLogout;
+import com.albert.common.security.handler.Http401AuthenticationEntryPoint;
 import com.albert.common.security.serivce.UserServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -54,26 +55,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                // 不需要登录的请求
-                .antMatchers(permitList).permitAll()
-                // .antMatchers("/admin").hasAnyRole("ROLE_admin")
-                .and()
-                //允许跨域
+        http       //允许跨域
                 .cors().and()
                 //关闭 csrf
                 .csrf().disable()
-                .authorizeRequests()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//去除默认session
+                .and().authorizeRequests()
+                // 不需要登录的请求
+                .antMatchers(permitList).permitAll()
+                // .antMatchers("/admin").hasAnyRole("ROLE_admin")
                 //任何请求方式
-                .anyRequest().permitAll()
-                .and()
-                .logout()
-                .permitAll()
-                .logoutSuccessHandler(new AuthenticationLogout(redisTemplate))
-                .and()
-                .addFilter(new AuthenticationFilter(authenticationManager(), redisTemplate))
+                .anyRequest().authenticated()
+                .and().exceptionHandling().authenticationEntryPoint(new Http401AuthenticationEntryPoint())
+                .and().addFilter(new AuthenticationFilter(authenticationManager(), redisTemplate))
                 .addFilter(new OncePreAuthenticationFilter(authenticationManager(), redisTemplate))
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//去除默认session
+                .logout()
+                .logoutSuccessHandler(new AuthenticationLogout(redisTemplate))
+                .permitAll();
     }
 
     /**
