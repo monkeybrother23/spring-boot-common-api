@@ -3,6 +3,7 @@ package com.albert.common.swagger.config;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -22,17 +23,18 @@ import java.util.Collections;
 @EnableOpenApi
 @Configuration
 public class SwaggerConfig {
-    private static final String TOKEN_HEADER = "Authorization";
+    @Value("${swagger.config.header}")
+    private String header;
 
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
-                .securitySchemes(Collections.singletonList(new ApiKey(TOKEN_HEADER, TOKEN_HEADER, SecurityScheme.In.HEADER.name())))
+                .securitySchemes(Collections.singletonList(new ApiKey(header, header, SecurityScheme.In.HEADER.name())))
                 .securityContexts(Collections.singletonList(SecurityContext.builder()
                         .securityReferences(Collections.singletonList(SecurityReference.builder()
                                 .scopes(new AuthorizationScope[0])
-                                .reference(TOKEN_HEADER)
+                                .reference(header)
                                 .build()))
                         // 声明作用域
                         .operationSelector(o -> o.requestMappingPattern().matches("/.*"))
