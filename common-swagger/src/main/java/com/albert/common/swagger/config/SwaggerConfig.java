@@ -23,7 +23,7 @@ import java.util.Collections;
 @EnableOpenApi
 @Configuration
 public class SwaggerConfig {
-    @Value("${swagger.config.header}")
+    @Value("${swagger.token.header}")
     private String header;
 
     @Bean
