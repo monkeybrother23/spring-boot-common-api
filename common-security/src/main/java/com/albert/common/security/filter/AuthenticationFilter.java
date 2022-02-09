@@ -1,6 +1,5 @@
 package com.albert.common.security.filter;
 
-import com.albert.common.security.config.ConfigConstant;
 import com.albert.common.security.model.UserTokenModel;
 import com.albert.common.security.utils.SecurityUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +35,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username = request.getParameter(ConfigConstant.LOGIN_USERNAME);
-        String password = request.getParameter(ConfigConstant.LOGIN_PASSWORD);
+        String username = null;
+        String password = null;
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        if (webApplicationContext != null) {
+            username = request.getParameter(webApplicationContext.getEnvironment().getProperty("security.token.username"));
+            password = request.getParameter(webApplicationContext.getEnvironment().getProperty("security.token.password"));
+        }
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>()));
     }
 

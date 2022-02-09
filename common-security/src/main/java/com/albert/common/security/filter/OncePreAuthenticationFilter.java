@@ -1,6 +1,5 @@
 package com.albert.common.security.filter;
 
-import com.albert.common.security.config.ConfigConstant;
 import com.albert.common.security.model.UserTokenModel;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +7,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -35,7 +36,11 @@ public class OncePreAuthenticationFilter extends BasicAuthenticationFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String tokenHeader = request.getHeader(ConfigConstant.TOKEN_HEADER);
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
+        String tokenHeader = null;
+        if (webApplicationContext != null) {
+            tokenHeader = request.getHeader(webApplicationContext.getEnvironment().getProperty("security.token.header"));
+        }
         if (Objects.isNull(tokenHeader)) {
             chain.doFilter(request, response);
         } else {
