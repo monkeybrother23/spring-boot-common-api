@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ApiResult<T extends Serializable> implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ApiModel<T extends Serializable> {
 
     private boolean status;
 
@@ -55,8 +53,8 @@ public class ApiResult<T extends Serializable> implements Serializable {
      * @param apiMessage ApiMessage
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<T> ok(ApiMessage apiMessage) {
-        ApiResult<T> result = new ApiResult<>();
+    public static <T extends Serializable> ApiModel<T> ok(ApiMessage apiMessage) {
+        ApiModel<T> result = new ApiModel<>();
         result.status = true;
         result.setCode(apiMessage.getCode());
         result.setMsg(apiMessage.getMsg());
@@ -70,8 +68,8 @@ public class ApiResult<T extends Serializable> implements Serializable {
      * @param apiMessage ApiMessage
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<T> ok(T data, ApiMessage apiMessage) {
-        ApiResult<T> result = new ApiResult<>();
+    public static <T extends Serializable> ApiModel<T> ok(T data, ApiMessage apiMessage) {
+        ApiModel<T> result = new ApiModel<>();
         result.status = true;
         result.setCode(apiMessage.getCode());
         result.setMsg(apiMessage.getMsg());
@@ -87,8 +85,8 @@ public class ApiResult<T extends Serializable> implements Serializable {
      * @param <T>        泛型
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<ArrayList<T>> ok2(List<T> list, ApiMessage apiMessage) {
-        ApiResult<ArrayList<T>> apiResult = new ApiResult<>();
+    public static <T extends Serializable> ApiModel<ArrayList<T>> ok2(List<T> list, ApiMessage apiMessage) {
+        ApiModel<ArrayList<T>> apiResult = new ApiModel<>();
         apiResult.setStatus(true);
         apiResult.setCode(apiMessage.getCode());
         apiResult.setMsg(apiMessage.getMsg());
@@ -108,8 +106,8 @@ public class ApiResult<T extends Serializable> implements Serializable {
      * @param apiMessage apiMessage
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<T> fail(ApiMessage apiMessage) {
-        ApiResult<T> result = new ApiResult<>();
+    public static <T extends Serializable> ApiModel<T> fail(ApiMessage apiMessage) {
+        ApiModel<T> result = new ApiModel<>();
         result.status = false;
         result.setCode(apiMessage.getCode());
         result.setMsg(apiMessage.getMsg());
@@ -124,8 +122,8 @@ public class ApiResult<T extends Serializable> implements Serializable {
      * @param <T>  泛型
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiResult<T> fail(String code, String msg) {
-        ApiResult<T> result = new ApiResult<>();
+    public static <T extends Serializable> ApiModel<T> fail(String code, String msg) {
+        ApiModel<T> result = new ApiModel<>();
         result.status = false;
         result.setCode(code);
         result.setMsg(msg);

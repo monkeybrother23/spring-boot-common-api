@@ -1,11 +1,14 @@
 package com.albert.common.web.result;
 
 public enum ApiStatus implements ApiMessage {
-    SUCCESS("200", "Success"),
-    FORBIDDEN("403", "Forbidden"),
-    VALIDATION("400", "Validation"),
-    ERROR("500", "System Error");
+    SUCCESS("00010", "success"),
+    FAIL("00011", "fail"),
+    ERROR("00012", "error"),
 
+    FORBIDDEN("00020", "forbidden"),
+    VALIDATION("00030", "validation"),
+
+    NULLPOINTER_EXCEPTION("00040", "NullPointerException");
     private final String code;
     private final String msg;
 
