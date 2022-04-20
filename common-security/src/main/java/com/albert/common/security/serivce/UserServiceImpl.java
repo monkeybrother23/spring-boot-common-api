@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserDetailsService {
              throw new UsernameNotFoundException(userName);
         } else {
             List<HashMap<String, String>> userRoleAndAuthorityList = userRepository.findUserRoleAndAuthorityByUsername(userName);
-            authorities = userRoleAndAuthorityList.stream().map(temp -> new SimpleGrantedAuthority(temp.getOrDefault("my_key", ""))).collect(Collectors.toList());
+            authorities = userRoleAndAuthorityList.stream().map(temp -> new SimpleGrantedAuthority(temp.getOrDefault("security_name", ""))).collect(Collectors.toList());
             return new User(entity.getUsername(), entity.getPassword(), authorities);
         }
     }

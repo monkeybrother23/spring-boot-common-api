@@ -9,7 +9,6 @@
         <version>0.0.1</version>
     </parent>
     <artifactId>common-redis</artifactId>
-<!--    <version>0.0.1</version>-->
     <name>common-redis</name>
     <description>redis</description>
 
