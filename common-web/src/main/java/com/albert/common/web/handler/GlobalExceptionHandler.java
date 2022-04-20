@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ApiException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ApiModel<String> apiExceptionHandler(ApiException e) {
-        return ApiModel.fail(e);
+        return ApiModel.fail("error", e);
     }
 
     /**
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
         fieldErrors.forEach(temp -> stringJoiner.add(temp.getField() + ":" + temp.getDefaultMessage()));
         String msg = stringJoiner.toString();
         logger.warn("bindExceptionHandler:{}", msg);
-        return ApiModel.fail(ApiStatus.VALIDATION.getCode(), msg);
+        return ApiModel.fail(msg, ApiStatus.VALIDATION);
     }
 
     /**
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ApiModel<String> accessExceptionHandler(AccessDeniedException e) {
-        return ApiModel.fail(ApiStatus.FORBIDDEN.getCode(), "权限不足，无法访问");
+        return ApiModel.fail("权限不足，无法访问", ApiStatus.FORBIDDEN);
     }
 
     /**
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = NullPointerException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ApiModel<String> nullPointerExceptionHandler(NullPointerException e) {
-        return ApiModel.fail(ApiStatus.NULLPOINTER_EXCEPTION.getCode(), "空指针异常");
+        return ApiModel.fail("空指针异常", ApiStatus.NULLPOINTER_EXCEPTION);
     }
 
     /**
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiModel<String> exceptionHandler(Exception e) {
-        return ApiModel.fail(ApiStatus.ERROR.getCode(), e.getMessage());
+        return ApiModel.fail(e.getMessage(), ApiStatus.ERROR);
     }
 
 }

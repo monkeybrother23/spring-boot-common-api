@@ -117,16 +117,15 @@ public class ApiModel<T extends Serializable> {
     /**
      * 失败返回
      *
-     * @param code code
-     * @param msg  msg
-     * @param <T>  泛型
+     * @param apiMessage apiMessage
      * @return ApiResult
      */
-    public static <T extends Serializable> ApiModel<T> fail(String code, String msg) {
+    public static <T extends Serializable> ApiModel<T> fail(T data, ApiMessage apiMessage) {
         ApiModel<T> result = new ApiModel<>();
         result.status = false;
-        result.setCode(code);
-        result.setMsg(msg);
+        result.setCode(apiMessage.getCode());
+        result.setMsg(apiMessage.getMsg());
+        result.setData(data);
         return result;
     }
 }
