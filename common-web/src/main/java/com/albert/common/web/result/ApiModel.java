@@ -47,28 +47,21 @@ public class ApiModel<T extends Serializable> {
         this.data = data;
     }
 
-    /**
-     * 成功返回
-     *
-     * @param apiMessage ApiMessage
-     * @return ApiResult
-     */
-    public static <T extends Serializable> ApiModel<T> ok(ApiMessage apiMessage) {
+    public static <T extends Serializable> ApiModel<T> success() {
         ApiModel<T> result = new ApiModel<>();
         result.status = true;
-        result.setCode(apiMessage.getCode());
-        result.setMsg(apiMessage.getMsg());
+        result.setCode(ApiStatus.SUCCESS.getCode());
+        result.setMsg(ApiStatus.SUCCESS.getMsg());
         return result;
     }
 
-    /**
-     * 成功返回
-     *
-     * @param data       T
-     * @param apiMessage ApiMessage
-     * @return ApiResult
-     */
-    public static <T extends Serializable> ApiModel<T> ok(T data, ApiMessage apiMessage) {
+    public static <T extends Serializable> ApiModel<T> success(T data) {
+        ApiModel<T> result = success();
+        result.setData(data);
+        return result;
+    }
+
+    public static <T extends Serializable> ApiModel<T> success(T data, ApiMessage apiMessage) {
         ApiModel<T> result = new ApiModel<>();
         result.status = true;
         result.setCode(apiMessage.getCode());
@@ -77,15 +70,7 @@ public class ApiModel<T extends Serializable> {
         return result;
     }
 
-    /**
-     * 成功返回
-     *
-     * @param list       list
-     * @param apiMessage apiMessage
-     * @param <T>        泛型
-     * @return ApiResult
-     */
-    public static <T extends Serializable> ApiModel<ArrayList<T>> ok2(List<T> list, ApiMessage apiMessage) {
+    public static <T> ApiModel<ArrayList<T>> ok(List<T> list, ApiMessage apiMessage) {
         ApiModel<ArrayList<T>> apiResult = new ApiModel<>();
         apiResult.setStatus(true);
         apiResult.setCode(apiMessage.getCode());
@@ -100,26 +85,20 @@ public class ApiModel<T extends Serializable> {
         return apiResult;
     }
 
-    /**
-     * 失败返回
-     *
-     * @param apiMessage apiMessage
-     * @return ApiResult
-     */
-    public static <T extends Serializable> ApiModel<T> fail(ApiMessage apiMessage) {
+    public static <T extends Serializable> ApiModel<T> fail() {
         ApiModel<T> result = new ApiModel<>();
         result.status = false;
-        result.setCode(apiMessage.getCode());
-        result.setMsg(apiMessage.getMsg());
+        result.setCode(ApiStatus.FAIL.getCode());
+        result.setMsg(ApiStatus.FAIL.getCode());
         return result;
     }
 
-    /**
-     * 失败返回
-     *
-     * @param apiMessage apiMessage
-     * @return ApiResult
-     */
+    public static <T extends Serializable> ApiModel<T> fail(T data) {
+        ApiModel<T> result = fail();
+        result.setData(data);
+        return result;
+    }
+
     public static <T extends Serializable> ApiModel<T> fail(T data, ApiMessage apiMessage) {
         ApiModel<T> result = new ApiModel<>();
         result.status = false;
