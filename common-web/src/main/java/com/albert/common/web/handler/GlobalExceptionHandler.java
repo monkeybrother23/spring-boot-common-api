@@ -28,8 +28,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ApiException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ApiModel<String> apiExceptionHandler(ApiException e) {
-        logger.error("apiExceptionHandler:{}", e.getMessage(), e);
-        return ApiModel.fail("error", e);
+        logger.error("ApiException:{}", e.getMessage(), e);
+        return ApiModel.fail(e.getMessage(), e);
     }
 
     /**
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         fieldErrors.forEach(temp -> stringJoiner.add(temp.getField() + ":" + temp.getDefaultMessage()));
         String msg = stringJoiner.toString();
-        logger.error("bindExceptionHandler:{}", msg);
+        logger.error("BindException:{}", msg);
         return ApiModel.fail(msg, ApiStatus.VALIDATION);
     }
 
@@ -53,18 +53,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AccessDeniedException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ApiModel<String> accessExceptionHandler(AccessDeniedException e) {
-        logger.error("accessExceptionHandler:{}", e.getMessage(), e);
-        return ApiModel.fail("权限不足，无法访问", ApiStatus.FORBIDDEN);
+        logger.error("AccessDeniedException:{}", e.getMessage(), e);
+        return ApiModel.fail(e.getMessage(), ApiStatus.FORBIDDEN);
     }
 
     /**
-     * AccessDeniedException
+     * NullPointerException
      */
     @ExceptionHandler(value = NullPointerException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ApiModel<String> nullPointerExceptionHandler(NullPointerException e) {
-        logger.error("nullPointerExceptionHandler:{}", e.getMessage(), e);
-        return ApiModel.fail("空指针异常", ApiStatus.NULLPOINTER_EXCEPTION);
+        logger.error("NullPointerException:{}", e.getMessage(), e);
+        return ApiModel.fail("NullPointerException", ApiStatus.NULLPOINTER_EXCEPTION);
     }
 
     /**
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiModel<String> exceptionHandler(Exception e) {
-        logger.error("exceptionHandler:{}", e.getMessage(), e);
+        logger.error("Exception:{}", e.getMessage(), e);
         return ApiModel.fail(e.getMessage(), ApiStatus.ERROR);
     }
 

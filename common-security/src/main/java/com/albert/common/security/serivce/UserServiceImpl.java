@@ -8,10 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -29,14 +28,17 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) {
-        UserEntity entity = userRepository.findUserEntityByUsername(userName);
-        List<GrantedAuthority> authorities;
-        if (Objects.isNull(entity)) {
-             throw new UsernameNotFoundException(userName);
+        if (Objects.equals("NONE_PROVIDED", userName)) {
+            return new User(userName, "", Collections.emptyList());
         } else {
-            List<HashMap<String, String>> userRoleAndAuthorityList = userRepository.findUserRoleAndAuthorityByUsername(userName);
-            authorities = userRoleAndAuthorityList.stream().map(temp -> new SimpleGrantedAuthority(temp.getOrDefault("security_name", ""))).collect(Collectors.toList());
-            return new User(entity.getUsername(), entity.getPassword(), authorities);
+            UserEntity entity = userRepository.findUserEntityByUsername(userName);
+            if (Objects.isNull(entity)) {
+                return new User(userName, "", Collections.emptyList());
+            } else {
+                List<HashMap<String, String>> userRoleAndAuthorityList = userRepository.findUserRoleAndAuthorityByUsername(userName);
+                List<GrantedAuthority> authorities = userRoleAndAuthorityList.stream().map(temp -> new SimpleGrantedAuthority(temp.getOrDefault("security_name", ""))).collect(Collectors.toList());
+                return new User(userName, entity.getPassword(), authorities);
+            }
         }
     }
 
