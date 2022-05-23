@@ -34,7 +34,9 @@ public class AuthenticationLogout implements LogoutSuccessHandler {
             tokenHeader = httpServletRequest.getHeader(webApplicationContext.getEnvironment().getProperty("security.token.header"));
         }
         if (StringUtils.hasLength(tokenHeader) && Boolean.TRUE.equals(redisTemplate.hasKey(tokenHeader))) {
-            logger.debug("清除缓存token");
+            if (logger.isDebugEnabled()) {
+                logger.debug("onLogoutSuccess:清楚token:{}", tokenHeader);
+            }
             redisTemplate.delete(tokenHeader);
         }
         httpServletResponse.setContentType("application/json;charset=utf-8");
