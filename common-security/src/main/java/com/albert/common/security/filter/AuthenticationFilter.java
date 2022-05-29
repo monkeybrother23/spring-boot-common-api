@@ -41,7 +41,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try (BufferedReader br = request.getReader()) {
             String str;
             while ((str = br.readLine()) != null) {
-                sb.append(str.trim());
+                sb.append(str);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,6 +85,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         map.put("status", true);
         map.put("code", "200");
         map.put("msg", "登陆成功");
+        map.put("data", name);
         writer.println(objectMapper.writeValueAsString(map));
         writer.close();
         response.setStatus(HttpStatus.OK.value());
