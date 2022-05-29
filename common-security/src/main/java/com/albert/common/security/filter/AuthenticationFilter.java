@@ -16,6 +16,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -35,12 +36,35 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
+        StringBuilder sb = new StringBuilder("");
+        try (BufferedReader br = request.getReader()) {
+            String str;
+            while ((str = br.readLine()) != null) {
+                sb.append(str.trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String str = sb.toString();
         String username = null;
         String password = null;
+        HashMap<String, String> map = new HashMap<>();
+        str = str.substring(str.indexOf("{") + 1, str.indexOf("}"));
+        str = str.replace("\"", "");
+        String[] split = str.split(",");
+        for (String s : split) {
+            String[] temp = s.split(":");
+            if (temp.length == 2) {
+                map.put(temp[0].trim(), temp[1].trim());
+            }
+        }
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getServletContext());
         if (webApplicationContext != null) {
-            username = request.getParameter(webApplicationContext.getEnvironment().getProperty("security.token.username"));
-            password = request.getParameter(webApplicationContext.getEnvironment().getProperty("security.token.password"));
+            String loginUsername = webApplicationContext.getEnvironment().getProperty("security.token.username");
+            String loginPassword = webApplicationContext.getEnvironment().getProperty("security.token.password");
+            username = map.getOrDefault(loginUsername, "NULL");
+            password = map.getOrDefault(loginPassword, "NULL");
         }
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>()));
     }
