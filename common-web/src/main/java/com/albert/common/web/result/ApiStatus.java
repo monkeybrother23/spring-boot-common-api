@@ -1,9 +1,9 @@
 package com.albert.common.web.result;
 
 public enum ApiStatus implements ApiMessage {
-    SUCCESS("00010", "success"),
-    FAIL("00011", "fail"),
-    ERROR("00012", "error"),
+    SUCCESS("200", "success"),
+    FAIL("400", "fail"),
+    ERROR("400", "error"),
     FORBIDDEN("00020", "forbidden"),
     VALIDATION("00030", "validation"),
     NULLPOINTER_EXCEPTION("00040", "NullPointerException"),
