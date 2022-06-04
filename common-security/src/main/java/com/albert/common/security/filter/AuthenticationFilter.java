@@ -95,16 +95,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json;charset=utf-8");
-        PrintWriter writer = response.getWriter();
         HashMap<String, Object> map = new HashMap<>();
         map.put("status", true);
         map.put("code", "400");
         map.put("msg", "登陆失败,用户名或者密码错误");
-        writer.println(objectMapper.writeValueAsString(map));
-        writer.close();
-        response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.flushBuffer();
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().println(new ObjectMapper().writeValueAsString(map));
     }
 }
